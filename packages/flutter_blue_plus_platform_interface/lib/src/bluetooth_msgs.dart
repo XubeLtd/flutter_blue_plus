@@ -113,7 +113,8 @@ class BmScanSettings {
     data['android_scan_mode'] = androidScanMode;
     data['android_uses_fine_location'] = androidUsesFineLocation;
     data['android_check_location_services'] = androidCheckLocationServices;
-    data['web_optional_services'] = webOptionalServices.map((s) => s.str).toList();
+    data['web_optional_services'] =
+        webOptionalServices.map((s) => s.str).toList();
     return data;
   }
 }
@@ -171,7 +172,8 @@ class BmScanAdvertisement {
       remoteId: DeviceIdentifier(json['remote_id']),
       platformName: json['platform_name'],
       advName: json['adv_name'],
-      connectable: json['connectable'] != null ? json['connectable'] != 0 : false,
+      connectable:
+          json['connectable'] != null ? json['connectable'] != 0 : false,
       txPowerLevel: json['tx_power_level'],
       appearance: json['appearance'],
       manufacturerData: manufacturerData,
@@ -225,6 +227,54 @@ class BmConnectRequest {
     final Map<dynamic, dynamic> data = {};
     data['remote_id'] = remoteId.str;
     data['auto_connect'] = autoConnect ? 1 : 0;
+    return data;
+  }
+}
+
+class BmConnectL2CapRequest {
+  DeviceIdentifier remoteId;
+  int psm;
+
+  BmConnectL2CapRequest({
+    required this.remoteId,
+    required this.psm,
+  });
+
+  Map<dynamic, dynamic> toMap() {
+    final Map<dynamic, dynamic> data = {};
+    data['remote_id'] = remoteId.str;
+    data['psm'] = psm;
+    return data;
+  }
+}
+
+class BmL2CapRequest {
+  String socketId;
+
+  BmL2CapRequest({
+    required this.socketId,
+  });
+
+  Map<dynamic, dynamic> toMap() {
+    final Map<dynamic, dynamic> data = {};
+    data['socket_id'] = socketId;
+    return data;
+  }
+}
+
+class BmWriteL2CapRequest {
+  String socketId;
+  List<int> data;
+
+  BmWriteL2CapRequest({
+    required this.socketId,
+    required this.data,
+  });
+
+  Map<dynamic, dynamic> toMap() {
+    final Map<dynamic, dynamic> data = {};
+    data['socket_id'] = socketId;
+    data['data'] = data;
     return data;
   }
 }
@@ -307,7 +357,6 @@ class BmBluetoothCharacteristic {
   final Guid? primaryServiceUuid;
   List<BmBluetoothDescriptor> descriptors;
   BmCharacteristicProperties properties;
-
 
   BmBluetoothCharacteristic({
     required this.remoteId,
@@ -473,7 +522,6 @@ class BmCharacteristicData {
   final int errorCode;
   final String errorString;
 
-
   BmCharacteristicData({
     required this.remoteId,
     required this.serviceUuid,
@@ -539,7 +587,6 @@ class BmWriteCharacteristicRequest {
   final BmWriteType writeType;
   final bool allowLongWrite;
   final List<int> value;
-
 
   BmWriteCharacteristicRequest({
     required this.remoteId,
@@ -641,7 +688,6 @@ class BmSetNotifyValueRequest {
   final bool forceIndications;
   final bool enable;
 
-
   BmSetNotifyValueRequest({
     required this.remoteId,
     required this.serviceUuid,
@@ -685,7 +731,8 @@ class BmConnectionStateResponse {
   factory BmConnectionStateResponse.fromMap(Map<dynamic, dynamic> json) {
     return BmConnectionStateResponse(
       remoteId: DeviceIdentifier(json['remote_id']),
-      connectionState: BmConnectionStateEnum.values[json['connection_state'] as int],
+      connectionState:
+          BmConnectionStateEnum.values[json['connection_state'] as int],
       disconnectReasonCode: json['disconnect_reason_code'],
       disconnectReasonString: json['disconnect_reason_string'],
     );
@@ -874,7 +921,9 @@ class BmBondStateResponse {
     return BmBondStateResponse(
       remoteId: DeviceIdentifier(json['remote_id']),
       bondState: BmBondStateEnum.values[json['bond_state']],
-      prevState: json['prev_state'] != null ? BmBondStateEnum.values[json['prev_state']] : null,
+      prevState: json['prev_state'] != null
+          ? BmBondStateEnum.values[json['prev_state']]
+          : null,
     );
   }
 }
@@ -887,7 +936,7 @@ class BmCreateBondRequest {
     required this.remoteId,
     required this.pin,
   });
-  
+
   Map<dynamic, dynamic> toMap() {
     final Map<dynamic, dynamic> data = {};
     data['remote_id'] = remoteId.str;

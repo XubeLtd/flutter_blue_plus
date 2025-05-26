@@ -139,7 +139,8 @@ class BluetoothDevice {
       }
 
       // invoke
-      bool changed = await FlutterBluePlus._invokeMethod(() => FlutterBluePlusPlatform.instance.connect(request));
+      bool changed = await FlutterBluePlus._invokeMethod(
+          () => FlutterBluePlusPlatform.instance.connect(request));
 
       // we return the disconnect mutex now so that this
       // connection attempt can be canceled by calling disconnect
@@ -185,6 +186,101 @@ class BluetoothDevice {
     }
   }
 
+  Future<String?> createL2CapChannel(int psm) async {
+    // make sure no one else is calling
+    _Mutex dmtx = _MutexFactory.getMutexForKey("createL2CapChannel");
+    bool dtook = await dmtx.take();
+    // Only allow a single ble operation to be underway at a time
+    _Mutex mtx = _MutexFactory.getMutexForKey("global");
+    await mtx.take();
+    try {
+      final response = await FlutterBluePlus._invokeMethod(
+        () => FlutterBluePlusPlatform.instance.createL2CapChannel(
+          BmConnectL2CapRequest(remoteId: remoteId, psm: psm),
+        ),
+      );
+      return response;
+    } finally {
+      if (dtook) {
+        dmtx.give();
+      }
+      mtx.give();
+    }
+  }
+
+  Future<bool> closeL2CapChannel(String socketId) async {
+    // make sure no one else is calling
+    _Mutex dmtx = _MutexFactory.getMutexForKey("closeL2CapChannel");
+    bool dtook = await dmtx.take();
+    // Only allow a single ble operation to be underway at a time
+    _Mutex mtx = _MutexFactory.getMutexForKey("global");
+    await mtx.take();
+    try {
+      final response = await FlutterBluePlus._invokeMethod(
+        () => FlutterBluePlusPlatform.instance.closeL2CapChannel(
+          BmL2CapRequest(socketId: socketId),
+        ),
+      );
+      return response;
+    } finally {
+      if (dtook) {
+        dmtx.give();
+      }
+      mtx.give();
+    }
+  }
+
+  Future<List<int>> l2CapRead(String socketId) async {
+    // make sure no one else is calling
+    _Mutex dmtx = _MutexFactory.getMutexForKey("l2CapRead");
+    bool dtook = await dmtx.take();
+
+    // Only allow a single ble operation to be underway at a time
+    _Mutex mtx = _MutexFactory.getMutexForKey("global");
+    await mtx.take();
+    try {
+      final response = await FlutterBluePlus._invokeMethod(
+        () => FlutterBluePlusPlatform.instance.l2CapRead(
+          BmL2CapRequest(socketId: socketId),
+        ),
+      );
+
+      log('l2CapRead: $response');
+      return response;
+    } finally {
+      if (dtook) {
+        dmtx.give();
+      }
+      mtx.give();
+    }
+  }
+
+  Future<bool> l2CapWrite(String socketId, List<int> data) async {
+    // make sure no one else is calling
+    _Mutex dmtx = _MutexFactory.getMutexForKey("l2CapWrite");
+    bool dtook = await dmtx.take();
+    // Only allow a single ble operation to be underway at a time
+    _Mutex mtx = _MutexFactory.getMutexForKey("global");
+    await mtx.take();
+    try {
+      log('l2CapWrite before}');
+
+      final response = await FlutterBluePlus._invokeMethod(
+        () => FlutterBluePlusPlatform.instance.l2CapWrite(
+          BmWriteL2CapRequest(socketId: socketId, data: []),
+        ),
+      );
+
+      log('l2CapWrite: $response $data ${data.length}');
+      return response;
+    } finally {
+      if (dtook) {
+        dmtx.give();
+      }
+      mtx.give();
+    }
+  }
+
   /// Cancels connection to the Bluetooth Device
   ///   - [queue] If true, this disconnect request will be executed after all other operations complete.
   ///     If false, this disconnect request will be executed right now, i.e. skipping to the front
@@ -227,7 +323,9 @@ class BluetoothDevice {
       await _ensureAndroidDisconnectionDelay(androidDelay);
 
       // invoke
-      bool changed = await FlutterBluePlus._invokeMethod(() => FlutterBluePlusPlatform.instance.disconnect(BmDisconnectRequest(remoteId: remoteId)));
+      bool changed = await FlutterBluePlus._invokeMethod(() =>
+          FlutterBluePlusPlatform.instance
+              .disconnect(BmDisconnectRequest(remoteId: remoteId)));
 
       // only wait for disconnection if weren't already disconnected
       if (changed) {
@@ -368,7 +466,7 @@ class BluetoothDevice {
   Stream<void> get onServicesReset {
     return FlutterBluePlusPlatform.instance.onServicesReset
         .where((p) => p.remoteId == remoteId)
-        .map<void>((_) { /* no return, so this is a void callback */ });
+        .map<void>((_) {/* no return, so this is a void callback */});
   }
 
   /// Read the RSSI of connected remote device
@@ -581,7 +679,9 @@ class BluetoothDevice {
       Future<BmBondStateResponse> futureResponse = responseStream.first;
 
       // invoke
-      bool changed = await FlutterBluePlus._invokeMethod(() => FlutterBluePlusPlatform.instance.createBond(BmCreateBondRequest(remoteId: remoteId, pin: pin)));
+      bool changed = await FlutterBluePlus._invokeMethod(() =>
+          FlutterBluePlusPlatform.instance
+              .createBond(BmCreateBondRequest(remoteId: remoteId, pin: pin)));
 
       // only wait for 'bonded' if we weren't already bonded
       if (changed) {
@@ -625,12 +725,14 @@ class BluetoothDevice {
       Future<BmBondStateResponse> futureResponse = responseStream.first;
 
       // invoke
-      bool changed = await FlutterBluePlus._invokeMethod(() => FlutterBluePlusPlatform.instance.removeBond(BmRemoveBondRequest(remoteId: remoteId)));
+      bool changed = await FlutterBluePlus._invokeMethod(() =>
+          FlutterBluePlusPlatform.instance
+              .removeBond(BmRemoveBondRequest(remoteId: remoteId)));
 
       // only wait for 'unbonded' state if we weren't already unbonded
       if (changed) {
-        BmBondStateResponse bs = await futureResponse
-            .fbpTimeout(timeout, "removeBond");
+        BmBondStateResponse bs =
+            await futureResponse.fbpTimeout(timeout, "removeBond");
 
         // success?
         if (bs.bondState != BmBondStateEnum.none) {

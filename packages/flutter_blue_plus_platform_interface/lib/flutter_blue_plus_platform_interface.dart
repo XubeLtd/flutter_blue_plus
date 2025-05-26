@@ -113,6 +113,26 @@ abstract base class FlutterBluePlusPlatform {
     return Future.value(false);
   }
 
+  /// Connect to L2CAP channel
+  Future<String?> createL2CapChannel(BmConnectL2CapRequest request) {
+    return Future.value(null);
+  }
+
+  /// Close L2CAP channel
+  Future<bool> closeL2CapChannel(BmL2CapRequest request) {
+    return Future.value(false);
+  }
+
+  /// Read data from L2CAP channel
+  Future<List<int>> l2CapRead(BmL2CapRequest request) {
+    return Future.value([]);
+  }
+
+  /// Write data to L2CAP channel
+  Future<bool> l2CapWrite(BmWriteL2CapRequest request) {
+    return Future.value(false);
+  }
+
   Future<bool> discoverServices(
     BmDiscoverServicesRequest request,
   ) {
