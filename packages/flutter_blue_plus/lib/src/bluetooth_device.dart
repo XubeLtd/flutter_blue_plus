@@ -255,7 +255,7 @@ class BluetoothDevice {
     }
   }
 
-  Future<bool> l2CapWrite(String socketId, List<int> data) async {
+  Future<bool> l2CapWrite(String socketId, List<int> value) async {
     // make sure no one else is calling
     _Mutex dmtx = _MutexFactory.getMutexForKey("l2CapWrite");
     bool dtook = await dmtx.take();
@@ -263,15 +263,15 @@ class BluetoothDevice {
     _Mutex mtx = _MutexFactory.getMutexForKey("global");
     await mtx.take();
     try {
-      log('l2CapWrite before}');
+      log('l2CapWrite before');
 
       final response = await FlutterBluePlus._invokeMethod(
         () => FlutterBluePlusPlatform.instance.l2CapWrite(
-          BmWriteL2CapRequest(socketId: socketId, data: []),
+          BmWriteL2CapRequest(socketId: socketId, value: value),
         ),
       );
 
-      log('l2CapWrite: $response $data ${data.length}');
+      log('l2CapWrite: $response $value ${value.length}');
       return response;
     } finally {
       if (dtook) {

@@ -264,17 +264,17 @@ class BmL2CapRequest {
 
 class BmWriteL2CapRequest {
   String socketId;
-  List<int> data;
+  List<int> value;
 
   BmWriteL2CapRequest({
     required this.socketId,
-    required this.data,
+    required this.value,
   });
 
   Map<dynamic, dynamic> toMap() {
     final Map<dynamic, dynamic> data = {};
     data['socket_id'] = socketId;
-    data['data'] = data;
+    data['data'] = Uint8List.fromList(value);
     return data;
   }
 }

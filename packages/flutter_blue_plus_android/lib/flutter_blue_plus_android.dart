@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -186,7 +185,6 @@ final class FlutterBluePlusAndroid extends FlutterBluePlusPlatform {
   Future<bool> l2CapWrite(
     BmWriteL2CapRequest request,
   ) async {
-    log('l2CapWrite ${request.toMap()}');
     return await _invokeMethod<bool>(
           'l2CapWrite',
           request.toMap(),
@@ -477,13 +475,13 @@ final class FlutterBluePlusAndroid extends FlutterBluePlusPlatform {
     await _initFlutterBluePlus();
 
     // log args
-    // if (_logLevel == LogLevel.verbose) {
-    var func = '<$method>';
-    var args = arguments.toString();
-    func = _logColor ? '\x1B[1;30m$func\x1B[0m' : func;
-    args = _logColor ? '\x1B[1;35m$args\x1B[0m' : args;
-    print('[FBP] $func args: $args');
-    // }
+    if (_logLevel == LogLevel.verbose) {
+      var func = '<$method>';
+      var args = arguments.toString();
+      func = _logColor ? '\x1B[1;30m$func\x1B[0m' : func;
+      args = _logColor ? '\x1B[1;35m$args\x1B[0m' : args;
+      print('[FBP] $func args: $args');
+    }
 
     // invoke
     final out = await methodChannel.invokeMethod<T>(method, arguments);

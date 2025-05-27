@@ -792,31 +792,6 @@ public class FlutterBluePlusPlugin implements
                     break;
                 }
 
-                case "l2CapWrite1": {
-                    log(LogLevel.DEBUG, "[FBP] l2CapWrite...");
-                    Map<String, Object> args = (Map<String, Object>) call.arguments;
-                    String socketId = (String) args.get("socket_id");
-                    byte[] data = (byte[]) args.get("data"); // Make sure this is sent as Uint8List from Dart
-                    BluetoothSocket socket = l2capSockets.get(socketId);
-                    // log(LogLevel.DEBUG, "Write " + data.length + " bytes: " + Arrays.toString(data));
-                      log(LogLevel.DEBUG, "[FBP] l2CapWrite...");
-                      System.out.println("[FBP]1 l2CapWrite...");
-                    if (socket != null) {
-                        try {
-                            OutputStream outputStream = socket.getOutputStream();
-                         log(LogLevel.DEBUG, "[FBP] l2CapWrite...");
-
-                            outputStream.write(data);
-                            result.success(true);
-                        } catch (IOException e) {
-                            result.error("L2CAP_WRITE_ERROR", "Write failed", e.getMessage());
-                        }
-                    } else {
-                        result.error("INVALID_SOCKET", "Socket not found", null);
-                    }
-                    break;
-                }
-
                 case "l2CapRead": {
                     log(LogLevel.DEBUG, "[FBP] l2CapRead...");
                     Map<String, Object> args = (Map<String, Object>) call.arguments;
@@ -853,12 +828,9 @@ public class FlutterBluePlusPlugin implements
 
                     BluetoothSocket socket = l2capSockets.get(socketId);
                     // log(LogLevel.DEBUG, "Write " + data.length + " bytes: " + Arrays.toString(data));
-                      log(LogLevel.DEBUG, "[FBP] l2CapWrite...");
-                      System.out.println("[FBP]1 l2CapWrite...");
                     if (socket != null) {
                         try {
                             OutputStream outputStream = socket.getOutputStream();
-                         log(LogLevel.DEBUG, "[FBP] l2CapWrite...");
 
                             outputStream.write(data);
                             result.success(true);
