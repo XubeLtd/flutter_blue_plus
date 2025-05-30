@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -118,6 +119,7 @@ final class FlutterBluePlusAndroid extends FlutterBluePlusPlatform {
   }
 
   static void registerWith() {
+    log('Android:registerWith');
     FlutterBluePlusPlatform.instance = FlutterBluePlusAndroid();
   }
 

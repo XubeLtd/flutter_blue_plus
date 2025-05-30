@@ -200,12 +200,15 @@ class BluetoothDevice {
         ),
       );
       return response;
+    } catch (e) {
+      log('createL2CapChannel error: $e');
     } finally {
       if (dtook) {
         dmtx.give();
       }
       mtx.give();
     }
+    return null;
   }
 
   Future<bool> closeL2CapChannel(String socketId) async {
